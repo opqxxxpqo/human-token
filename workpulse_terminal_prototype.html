@@ -1,0 +1,260 @@
+
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: transparent; }
+  .root { font-family: var(--font-mono); background: #0d0d0d; border-radius: 10px; border: 1px solid #333; overflow: hidden; width: 100%; min-height: 520px; position: relative; color: #e8e8e8; }
+
+  /* TOP BAR */
+  .topbar { display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid #222; background: #111; }
+  .dot { width: 12px; height: 12px; border-radius: 50%; }
+  .dot.r { background: #ff5f57; } .dot.y { background: #febc2e; } .dot.g { background: #28c840; }
+  .topbar-title { font-size: 12px; color: #666; margin-left: 8px; letter-spacing: 0.04em; }
+  .topbar-right { margin-left: auto; font-size: 11px; color: #444; }
+
+  /* VIEW TOGGLE */
+  .view-tabs { display: flex; gap: 0; border-bottom: 1px solid #222; background: #0d0d0d; }
+  .tab { padding: 8px 18px; font-size: 12px; color: #555; cursor: pointer; border-right: 1px solid #1a1a1a; letter-spacing: 0.03em; transition: color 0.15s; user-select: none; }
+  .tab:hover { color: #aaa; }
+  .tab.active { color: #e8e8e8; border-bottom: 1px solid #e8e8e8; margin-bottom: -1px; background: #0d0d0d; }
+
+  /* MAIN CONTENT */
+  .panel { padding: 16px 18px; display: none; }
+  .panel.visible { display: block; }
+
+  /* FLOATING WIDGET VIEW */
+  .float-demo { display: flex; flex-direction: column; align-items: center; gap: 20px; padding: 20px; }
+  .float-label { font-size: 11px; color: #444; text-align: center; letter-spacing: 0.05em; }
+  .float-widget { width: 220px; background: #111; border: 1px solid #333; border-radius: 6px; padding: 10px 12px; position: relative; }
+  .float-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+  .float-title { font-size: 10px; color: #555; letter-spacing: 0.08em; }
+  .float-status { display: flex; align-items: center; gap: 5px; font-size: 10px; }
+  .pulse-dot { width: 6px; height: 6px; border-radius: 50%; background: #4cff91; animation: pulse 1.6s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+  .float-metric { font-size: 22px; font-weight: 500; color: #e8e8e8; letter-spacing: -0.01em; }
+  .float-sub { font-size: 10px; color: #555; margin-top: 2px; }
+  .float-bar-row { display: flex; gap: 2px; margin-top: 10px; }
+  .mini-bar { flex: 1; height: 28px; background: #1a1a1a; border-radius: 2px; position: relative; overflow: hidden; transition: background 0.3s; }
+  .mini-bar-fill { position: absolute; bottom: 0; width: 100%; background: #e8e8e8; transition: height 0.6s ease; }
+  .mini-bar.active .mini-bar-fill { background: #4cff91; }
+  .float-footer { display: flex; justify-content: space-between; margin-top: 8px; font-size: 9px; color: #444; }
+
+  /* DASHBOARD VIEW */
+  .dash-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .dash-title { font-size: 13px; color: #888; letter-spacing: 0.06em; }
+  .dash-date { font-size: 11px; color: #444; }
+  .prompt-line { font-size: 11px; color: #4cff91; margin-bottom: 14px; }
+  .prompt-line span { color: #666; }
+
+  .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 16px; }
+  .stat-card { background: #111; border: 1px solid #1e1e1e; border-radius: 4px; padding: 10px 12px; }
+  .stat-label { font-size: 9px; color: #444; letter-spacing: 0.08em; margin-bottom: 4px; }
+  .stat-val { font-size: 18px; color: #e8e8e8; }
+  .stat-unit { font-size: 10px; color: #555; margin-left: 2px; }
+  .stat-delta { font-size: 9px; color: #4cff91; margin-top: 2px; }
+  .stat-delta.down { color: #ff6b6b; }
+
+  .section-label { font-size: 10px; color: #444; letter-spacing: 0.08em; margin-bottom: 8px; border-bottom: 1px solid #1a1a1a; padding-bottom: 6px; }
+
+  .timeline { display: flex; flex-direction: column; gap: 4px; margin-bottom: 16px; }
+  .tl-row { display: flex; align-items: center; gap: 8px; }
+  .tl-time { font-size: 10px; color: #444; width: 36px; text-align: right; flex-shrink: 0; }
+  .tl-track { flex: 1; height: 14px; background: #111; border-radius: 2px; overflow: hidden; position: relative; border: 1px solid #1a1a1a; }
+  .tl-fill { height: 100%; border-radius: 1px; position: relative; }
+  .tl-fill.high { background: #e8e8e8; }
+  .tl-fill.mid { background: #555; }
+  .tl-fill.low { background: #2a2a2a; }
+  .tl-fill.idle { background: #161616; }
+  .tl-label { font-size: 9px; color: #333; width: 38px; flex-shrink: 0; }
+
+  .log-block { background: #080808; border: 1px solid #1a1a1a; border-radius: 4px; padding: 10px 12px; font-size: 11px; line-height: 1.8; }
+  .log-line { display: flex; gap: 10px; }
+  .log-time { color: #444; width: 40px; flex-shrink: 0; }
+  .log-msg { color: #666; }
+  .log-msg .hi { color: #e8e8e8; }
+  .log-msg .green { color: #4cff91; }
+  .log-msg .dim { color: #333; }
+  .cursor { display: inline-block; width: 7px; height: 12px; background: #e8e8e8; animation: blink 1s step-end infinite; vertical-align: middle; margin-left: 2px; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+  /* WEEKLY VIEW */
+  .week-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin-bottom: 16px; }
+  .day-col { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .day-label { font-size: 9px; color: #444; }
+  .day-bar-wrap { width: 100%; background: #111; border-radius: 2px; overflow: hidden; border: 1px solid #1a1a1a; height: 80px; display: flex; align-items: flex-end; }
+  .day-bar { width: 100%; border-radius: 1px; transition: height 0.5s ease; }
+  .day-val { font-size: 9px; color: #555; }
+  .day-col.today .day-label { color: #4cff91; }
+  .day-col.today .day-bar { background: #4cff91; }
+  .day-col:not(.today) .day-bar { background: #333; }
+
+  .insight-block { background: #080808; border: 1px solid #1a1a1a; border-left: 2px solid #4cff91; border-radius: 0 4px 4px 0; padding: 10px 12px; font-size: 11px; color: #555; line-height: 1.7; }
+  .insight-block strong { color: #aaa; font-weight: 500; }
+
+  .tag-row { display: flex; gap: 6px; flex-wrap: wrap; }
+  .tag { font-size: 10px; background: #111; border: 1px solid #222; border-radius: 3px; padding: 3px 8px; color: #555; }
+  .tag.active-tag { border-color: #333; color: #888; }
+</style>
+
+<div class="root">
+  <div class="topbar">
+    <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+    <span class="topbar-title">workpulse — v0.1.0</span>
+    <span class="topbar-right" id="live-time"></span>
+  </div>
+
+  <div class="view-tabs">
+    <div class="tab active" onclick="switchTab('float')">◉ widget</div>
+    <div class="tab" onclick="switchTab('dash')">▤ dashboard</div>
+    <div class="tab" onclick="switchTab('week')">▦ weekly</div>
+  </div>
+
+  <!-- FLOATING WIDGET PREVIEW -->
+  <div class="panel visible" id="panel-float">
+    <div class="float-demo">
+      <div class="float-label">FLOATING WIDGET — 悬浮球预览</div>
+      <div class="float-widget">
+        <div class="float-header">
+          <span class="float-title">WORKPULSE</span>
+          <span class="float-status"><span class="pulse-dot"></span><span style="font-size:10px;color:#4cff91">LIVE</span></span>
+        </div>
+        <div class="float-metric" id="fw-pct">73<span style="font-size:12px;color:#555">%</span></div>
+        <div class="float-sub" id="fw-label">活跃中 · 高专注区间</div>
+        <div class="float-bar-row" id="fw-bars"></div>
+        <div class="float-footer">
+          <span id="fw-keystrokes">↕ 1,204 次</span>
+          <span id="fw-elapsed">⏱ 03:42:11</span>
+        </div>
+      </div>
+      <div class="float-label" style="max-width:260px;line-height:1.6">
+        悬浮在屏幕右下角<br>点击展开主面板 · 拖拽可移动<br>
+        <span style="color:#333">—— 实时读取键鼠活跃度 ——</span>
+      </div>
+      <div class="tag-row" style="justify-content:center">
+        <span class="tag active-tag">键盘活跃</span>
+        <span class="tag active-tag">鼠标移动</span>
+        <span class="tag">截图</span>
+        <span class="tag">应用切换</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div class="panel" id="panel-dash">
+    <div class="dash-header">
+      <span class="dash-title">TODAY / 今日概览</span>
+      <span class="dash-date" id="dash-date"></span>
+    </div>
+    <div class="prompt-line">$ workpulse status --today <span>——————————————————</span></div>
+    <div class="stat-grid">
+      <div class="stat-card"><div class="stat-label">ACTIVE TIME</div><div class="stat-val">5<span class="stat-unit">h 14m</span></div><div class="stat-delta">↑ +22min vs avg</div></div>
+      <div class="stat-card"><div class="stat-label">KEYSTROKES</div><div class="stat-val">18,402</div><div class="stat-delta">↑ top 20%</div></div>
+      <div class="stat-card"><div class="stat-label">FOCUS SCORE</div><div class="stat-val">73<span class="stat-unit">%</span></div><div class="stat-delta">↑ +5 pts</div></div>
+      <div class="stat-card"><div class="stat-label">IDLE BLOCKS</div><div class="stat-val">3<span class="stat-unit">x</span></div><div class="stat-delta down">↑ 1 more than avg</div></div>
+    </div>
+    <div class="section-label">ACTIVITY TIMELINE — 08:00 → NOW</div>
+    <div class="timeline" id="timeline"></div>
+    <div class="section-label" style="margin-top:14px">SYSTEM LOG</div>
+    <div class="log-block">
+      <div class="log-line"><span class="log-time">09:12</span><span class="log-msg">burst detected · <span class="hi">312 keystrokes</span> in 4min</span></div>
+      <div class="log-line"><span class="log-time">11:03</span><span class="log-msg">idle window · <span class="dim">18min no input</span></span></div>
+      <div class="log-line"><span class="log-time">13:47</span><span class="log-msg">resumed · focus score <span class="green">+8</span></span></div>
+      <div class="log-line"><span class="log-time">15:30</span><span class="log-msg">peak window · <span class="hi">sustained high activity</span> 47min</span></div>
+      <div class="log-line"><span class="log-time">now&nbsp;&nbsp;</span><span class="log-msg">monitoring <span class="cursor"></span></span></div>
+    </div>
+  </div>
+
+  <!-- WEEKLY -->
+  <div class="panel" id="panel-week">
+    <div class="dash-header">
+      <span class="dash-title">WEEKLY / 本周节律</span>
+    </div>
+    <div class="prompt-line">$ workpulse report --week <span>——————————————————</span></div>
+    <div class="section-label">DAILY FOCUS SCORE</div>
+    <div class="week-grid" id="week-grid"></div>
+    <div class="section-label">AI INSIGHT</div>
+    <div class="insight-block">
+      <strong>你的高效窗口在上午 09:00–11:30。</strong><br>
+      周三工作强度最高，但周四出现明显的能量低谷——建议周四上午保留轻任务缓冲。<br>
+      本周平均专注得分 <strong style="color:#e8e8e8">68</strong>，较上周提升 <strong style="color:#4cff91">+6</strong>。
+    </div>
+    <div class="section-label" style="margin-top:14px">TOP APPS THIS WEEK</div>
+    <div class="log-block">
+      <div class="log-line"><span class="log-time" style="width:90px;color:#555">Figma</span><span class="log-msg"><span class="hi">2h 34m</span> <span class="dim">████████████░░░░░</span></span></div>
+      <div class="log-line"><span class="log-time" style="width:90px;color:#555">VS Code</span><span class="log-msg"><span class="hi">1h 58m</span> <span class="dim">█████████░░░░░░░░</span></span></div>
+      <div class="log-line"><span class="log-time" style="width:90px;color:#555">Chrome</span><span class="log-msg"><span class="hi">1h 22m</span> <span class="dim">██████░░░░░░░░░░░</span></span></div>
+      <div class="log-line"><span class="log-time" style="width:90px;color:#555">Slack</span><span class="log-msg"><span class="dim">48m &nbsp;&nbsp;████░░░░░░░░░░░░░</span></span></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const tabs = ['float','dash','week'];
+function switchTab(id) {
+  tabs.forEach(t => {
+    document.getElementById('panel-'+t).classList.toggle('visible', t===id);
+    document.querySelectorAll('.tab')[tabs.indexOf(t)].classList.toggle('active', t===id);
+  });
+}
+
+// Live clock
+function updateClock() {
+  const n = new Date();
+  const s = n.toTimeString().slice(0,8);
+  const el = document.getElementById('live-time');
+  const de = document.getElementById('dash-date');
+  if(el) el.textContent = s;
+  if(de) de.textContent = n.toLocaleDateString('zh-CN',{month:'short',day:'numeric',weekday:'short'});
+}
+setInterval(updateClock,1000); updateClock();
+
+// Build timeline
+const tlData = [
+  {t:'09:00',pct:82,cls:'high',lbl:'冲刺'},
+  {t:'10:00',pct:91,cls:'high',lbl:'深度'},
+  {t:'11:00',pct:55,cls:'mid',lbl:'会议'},
+  {t:'12:00',pct:8,cls:'idle',lbl:'午休'},
+  {t:'13:00',pct:30,cls:'low',lbl:'缓慢'},
+  {t:'14:00',pct:88,cls:'high',lbl:'冲刺'},
+  {t:'15:00',pct:95,cls:'high',lbl:'峰值'},
+  {t:'16:00',pct:60,cls:'mid',lbl:'收尾'},
+  {t:'now',pct:73,cls:'mid',lbl:'当前'},
+];
+const tlEl = document.getElementById('timeline');
+tlData.forEach(d => {
+  tlEl.innerHTML += `<div class="tl-row"><span class="tl-time">${d.t}</span><div class="tl-track"><div class="tl-fill ${d.cls}" style="width:${d.pct}%"></div></div><span class="tl-label">${d.lbl}</span></div>`;
+});
+
+// Weekly bars
+const days = [{d:'Mon',v:58,today:false},{d:'Tue',v:72,today:false},{d:'Wed',v:91,today:false},{d:'Thu',v:44,today:false},{d:'Fri',v:73,today:true},{d:'Sat',v:12,today:false},{d:'Sun',v:0,today:false}];
+const wg = document.getElementById('week-grid');
+days.forEach(d => {
+  wg.innerHTML += `<div class="day-col ${d.today?'today':''}"><span class="day-label">${d.d}</span><div class="day-bar-wrap"><div class="day-bar" style="height:${d.v}%"></div></div><span class="day-val">${d.v}</span></div>`;
+});
+
+// Floating widget animation
+const bars = document.getElementById('fw-bars');
+const heights = [40,65,90,75,55,80,95,60,72,50,88,44];
+bars.innerHTML = heights.map((h,i) => `<div class="mini-bar ${i===heights.length-1?'active':''}"><div class="mini-bar-fill" style="height:${h}%"></div></div>`).join('');
+
+let pct = 73, ks = 18402, secs = 13331;
+setInterval(() => {
+  pct = Math.max(20, Math.min(99, pct + (Math.random()*6-3)));
+  ks += Math.floor(Math.random()*4);
+  secs++;
+  const p = Math.round(pct);
+  document.getElementById('fw-pct').innerHTML = `${p}<span style="font-size:12px;color:#555">%</span>`;
+  document.getElementById('fw-label').textContent = p > 80 ? '活跃中 · 高专注区间' : p > 50 ? '正常工作中' : '低活跃 · 可能在思考';
+  document.getElementById('fw-keystrokes').textContent = `↕ ${ks.toLocaleString()} 次`;
+  const h = String(Math.floor(secs/3600)).padStart(2,'0');
+  const m = String(Math.floor((secs%3600)/60)).padStart(2,'0');
+  const s = String(secs%60).padStart(2,'0');
+  document.getElementById('fw-elapsed').textContent = `⏱ ${h}:${m}:${s}`;
+  // Shift bars
+  const fills = document.querySelectorAll('.mini-bar-fill');
+  if(fills.length) {
+    for(let i=0;i<fills.length-1;i++) fills[i].style.height = fills[i+1].style.height;
+    fills[fills.length-1].style.height = Math.round(pct) + '%';
+    document.querySelectorAll('.mini-bar')[fills.length-1].classList.add('active');
+  }
+}, 1200);
+</script>

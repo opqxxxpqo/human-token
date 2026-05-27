@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>human-token · widget</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <div class="widget" data-tauri-drag-region id="widget">
+    <div class="widget-head" data-tauri-drag-region>
+      <span class="widget-title">HUMAN TOKEN</span>
+      <span class="widget-head-right">
+        <span class="widget-live"><span class="pulse-dot" id="dot"></span><span id="state-label">LIVE</span></span>
+        <button id="widget-close" class="widget-close" title="quit" data-tauri-drag-region="false">×</button>
+      </span>
+    </div>
+
+    <div class="widget-metric" data-tauri-drag-region>
+      <span class="spinner" id="spinner">─</span>
+      <span class="widget-tokens" id="tokens">0.00</span>
+      <span class="widget-cap" id="cap">/ 200k</span>
+    </div>
+    <div class="widget-status" id="status">
+      <span class="gerund" id="gerund">Idling</span>
+      <span id="rate" style="color:var(--fg-deep); margin-left:4px;">· 0.00 t/s</span>
+    </div>
+
+    <div class="widget-bars" id="bars"></div>
+
+    <div class="widget-progress" id="progress">
+      <span class="progress-bracket">[</span><span class="progress-fill" id="progress-fill"></span><span class="progress-empty" id="progress-empty"></span><span class="progress-bracket">]</span>
+      <span class="progress-pct" id="progress-pct">0%</span>
+    </div>
+
+    <div class="widget-foot">
+      <span class="foot-actions">
+        <a id="btn-reset" title="reset session" data-tauri-drag-region="false">↻</a>
+        <a id="btn-pause" title="pause/resume" data-tauri-drag-region="false">⏸</a>
+        <span class="foot-hint">dbl-click → dashboard</span>
+      </span>
+      <span id="elapsed">⏱ 00:00:00</span>
+    </div>
+
+    <!-- exit confirm overlay -->
+    <div class="exit-confirm" id="exit-confirm">
+      <div class="exit-confirm-title">EXIT?</div>
+      <div class="exit-confirm-body">
+        <span class="dim">今日累计</span>
+        <span id="exit-today" class="hi">0</span>
+        <span class="dim">tokens · 已存盘</span>
+      </div>
+      <div class="exit-confirm-actions">
+        <button class="exit-btn" id="exit-cancel">cancel</button>
+        <button class="exit-btn primary" id="exit-confirm-btn">save & quit</button>
+      </div>
+    </div>
+
+    <!-- collapsed strip (replaces widget when folded against an edge) -->
+    <div class="folded-strip" id="folded-strip">
+      <div class="folded-fill" id="folded-fill"></div>
+      <div class="folded-pulse" id="folded-pulse"></div>
+    </div>
+  </div>
+
+  <script src="./widget.js"></script>
+</body>
+</html>

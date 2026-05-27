@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>human-token · dashboard</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <div class="root">
+    <div class="topbar">
+      <span class="topbar-title">human-token — v0.1.0</span>
+      <span class="topbar-right">
+        <span class="privacy-badge">◉ LOCAL ONLY · 不上传 · 不共享</span>
+        <span id="live-time"></span>
+      </span>
+    </div>
+
+    <div class="view-tabs">
+      <div class="tab active" data-tab="dash">▤ dashboard</div>
+      <div class="tab" data-tab="timeline">▦ timeline</div>
+      <div class="tab" data-tab="week">▩ weekly</div>
+      <div class="tab" data-tab="settings">⚙ settings</div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div class="panel visible" id="panel-dash">
+      <div class="dash-header">
+        <span class="dash-title">TODAY / 今日能量</span>
+        <span class="dash-controls">
+          <button id="dash-stop" class="dash-btn danger" title="停止当前 session · 计数器归零">
+            <span class="stop-square"></span><span>stop</span>
+          </button>
+          <button id="dash-pause" class="dash-btn" title="暂停 / 恢复采集">
+            <span id="dash-pause-icon">⏸</span><span id="dash-pause-label">pause</span>
+          </button>
+        </span>
+        <span class="dash-date" id="dash-date" style="margin-left:auto"></span>
+      </div>
+      <div class="prompt-line">$ human-token status --today <span>————————————————</span></div>
+
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-label">SESSION TOKENS</div>
+          <div class="stat-val" id="s-session">0</div>
+          <div class="stat-delta dim" id="s-session-pct">0% of cap</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">TODAY TOTAL</div>
+          <div class="stat-val" id="s-today">0</div>
+          <div class="stat-delta dim">tokens since 00:00</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">KEYSTROKES</div>
+          <div class="stat-val" id="s-keys">0</div>
+          <div class="stat-delta dim" id="s-clicks">0 clicks</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">STATE</div>
+          <div class="stat-val" id="s-state" style="font-size:14px; line-height:1.4">—</div>
+          <div class="stat-delta" id="s-gerund">—</div>
+        </div>
+      </div>
+
+      <div class="section-label">REAL-TIME · CONSUMPTION RATE</div>
+      <div class="log-block" style="margin-bottom:16px">
+        <div class="log-line"><span class="log-time">rate</span><span class="log-msg"><span class="hi" id="r-rate">0.0</span> tokens/sec  <span class="dim" id="r-bar">░░░░░░░░░░░░░░░░░░░░</span></span></div>
+        <div class="log-line"><span class="log-time">cap</span><span class="log-msg">5h window · <span class="hi" id="r-cap">200,000</span> tokens</span></div>
+        <div class="log-line"><span class="log-time">used</span><span class="log-msg"><span class="hi" id="r-used">0</span> · <span class="green" id="r-pct">0%</span></span></div>
+        <div class="log-line"><span class="log-time">now</span><span class="log-msg">monitoring <span class="cursor"></span></span></div>
+      </div>
+
+      <div class="section-label">SYSTEM LOG</div>
+      <div class="log-block" id="log-block">
+        <div class="log-line"><span class="log-time">boot</span><span class="log-msg">tracker armed · listening to keyboard + mouse <span class="green">OK</span></span></div>
+      </div>
+    </div>
+
+    <!-- TIMELINE -->
+    <div class="panel" id="panel-timeline">
+      <div class="dash-header">
+        <span class="dash-title">TIMELINE / 时间线回放</span>
+        <span class="dash-date">00:00 → NOW · 15min buckets</span>
+      </div>
+      <div class="prompt-line">$ human-token replay --today <span>————————————————</span></div>
+      <div class="section-label">ACTIVITY BY HOUR</div>
+      <div class="timeline" id="timeline"></div>
+      <div class="section-label" style="margin-top:14px">PEAK WINDOWS</div>
+      <div class="log-block" id="peaks">
+        <div class="log-line"><span class="log-time">—</span><span class="log-msg dim">scan after first hour of activity</span></div>
+      </div>
+    </div>
+
+    <!-- WEEKLY -->
+    <div class="panel" id="panel-week">
+      <div class="dash-header">
+        <span class="dash-title">WEEKLY / 本周节律</span>
+        <span class="dash-date">tap a day to focus · 24h curves</span>
+      </div>
+      <div class="prompt-line">$ human-token report --week <span>————————————————</span></div>
+
+      <div class="section-label">FOCUS · 24H CURVE</div>
+      <div class="week-focus">
+        <div class="week-focus-head">
+          <span class="when" id="focus-when">today</span>
+          <span class="total">total <b id="focus-total">0</b> tokens · peak <b id="focus-peak">—</b></span>
+        </div>
+        <svg class="curve-svg" id="focus-curve" viewBox="0 0 600 130" preserveAspectRatio="none"></svg>
+        <div class="curve-axis-row">
+          <span>00</span><span>04</span><span>08</span><span>12</span><span>16</span><span>20</span><span>24</span>
+        </div>
+      </div>
+
+      <div class="section-label">COMPARE · 7 DAYS</div>
+      <div class="week-mini-grid" id="week-mini"></div>
+
+      <div class="section-label" style="margin-top:14px">INSIGHT</div>
+      <div class="insight-block" id="weekly-insight">
+        Insufficient data — give it a few days. <span class="dim">每天累计后会自动生成节律分析。</span>
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="panel" id="panel-settings">
+      <div class="dash-header"><span class="dash-title">SETTINGS / 配额与休息</span></div>
+      <div class="prompt-line">$ human-token config <span>————————————————</span></div>
+
+      <div class="settings-row">
+        <label>Token cap (5h window)</label>
+        <input type="number" id="cfg-cap" min="10000" step="10000" />
+        <span class="hint">默认 200,000 ≈ 一整天饱和键鼠</span>
+      </div>
+      <div class="settings-row">
+        <label>Rest reminder threshold</label>
+        <input type="number" id="cfg-pct" min="50" max="100" />
+        <span class="hint">达到 % 时悬浮球变橙</span>
+      </div>
+      <div class="settings-row">
+        <label>Accent color</label>
+        <input type="color" id="cfg-color" />
+        <span class="hint">主题强调色 · 影响数字 / 进度 / 状态点</span>
+      </div>
+      <div class="settings-row">
+        <label>Close to tray</label>
+        <label class="toggle"><input type="checkbox" id="cfg-tray" /><span>关闭悬浮球时隐藏到托盘</span></label>
+        <span class="hint">关闭时不退出，从托盘单击恢复</span>
+      </div>
+      <div class="settings-row" style="border:none">
+        <button id="cfg-save" class="cfg-btn">save</button>
+        <span class="hint" id="cfg-status"></span>
+      </div>
+
+      <div class="section-label" style="margin-top:24px">PRIVACY</div>
+      <div class="insight-block">
+        <strong>Local-only.</strong>
+        <span style="color:var(--fg-deep)">
+          所有数据都保存在你电脑本机的 app-data 目录，不联网，不上传，不共享。
+          关闭软件即停止采集。卸载后清除目录即可彻底删除。
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <script src="./main.js"></script>
+</body>
+</html>

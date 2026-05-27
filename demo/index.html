@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>human token · interactive preview</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body class="demo-body">
+  <div class="demo-stage" id="demo-stage">
+    <header class="demo-hdr">
+      <span class="demo-eyebrow">interactive preview</span>
+      <h1 class="demo-title">human <span>token</span></h1>
+      <p class="demo-hint">
+        点这里 → 开始打字 → 看右上角悬浮球的反应。<br/>
+        拖动悬浮球到 <b>左/右/上</b> 边缘 → 600ms 后会折叠成黑条 → hover 它展开回来。
+      </p>
+      <p class="demo-note">
+        浏览器仿真版 · 真实桌面 app 抓取 OS 级全局键鼠 · 数据只存本地
+      </p>
+    </header>
+
+    <div class="widget" id="widget">
+      <div class="widget-head">
+        <span class="widget-title">HUMAN TOKEN</span>
+        <span class="widget-head-right">
+          <span class="widget-live"><span class="pulse-dot" id="dot"></span><span id="state-label">LIVE</span></span>
+        </span>
+      </div>
+
+      <div class="widget-metric">
+        <span class="spinner" id="spinner">─</span>
+        <span class="widget-tokens" id="tokens">0.00</span>
+        <span class="widget-cap" id="cap">/ 200k</span>
+      </div>
+      <div class="widget-status" id="status">
+        <span class="gerund" id="gerund">Idling</span>
+        <span id="rate" style="color:var(--fg-deep); margin-left:4px;">· 0.00 t/s</span>
+      </div>
+
+      <div class="widget-bars" id="bars"></div>
+
+      <div class="widget-progress" id="progress">
+        <span class="progress-bracket">[</span><span class="progress-fill" id="progress-fill"></span><span class="progress-empty" id="progress-empty"></span><span class="progress-bracket">]</span>
+        <span class="progress-pct" id="progress-pct">0%</span>
+      </div>
+
+      <div class="widget-foot">
+        <span class="foot-actions">
+          <a id="btn-reset" title="reset session">↻</a>
+          <span class="foot-hint">drag me · type anywhere</span>
+        </span>
+        <span id="elapsed">⏱ 00:00:00</span>
+      </div>
+
+      <div class="folded-strip" id="folded-strip">
+        <div class="folded-fill" id="folded-fill"></div>
+      </div>
+    </div>
+
+    <div class="demo-cta" id="demo-cta">
+      <span class="cta-prompt">$</span>
+      <span id="cta-text">try me — keys count, clicks count, mouse moves count</span><span class="cta-cursor"></span>
+    </div>
+  </div>
+
+  <footer class="demo-foot">
+    <span class="dim">human token · web preview · </span>
+    <a href="https://github.com/" target="_blank" rel="noopener">source ↗</a>
+  </footer>
+
+  <script src="./widget.js"></script>
+</body>
+</html>
