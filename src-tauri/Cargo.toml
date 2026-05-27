@@ -23,6 +23,11 @@ chrono = { version = "0.4", features = ["serde"] }
 dirs = "5"
 parking_lot = "0.12"
 
+[profile.dev]
+# Keep line numbers in panics/backtraces but drop heavy DWARF/PDB symbols.
+# Cuts target/debug/deps size dramatically (the bulk of the dev artifacts).
+debug = "line-tables-only"
+
 [profile.release]
 panic = "abort"
 codegen-units = 1
