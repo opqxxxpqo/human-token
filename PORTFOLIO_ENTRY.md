@@ -28,8 +28,8 @@ gallery:
 bilibili:
   - BVxxxxxxxxxx          # ← 录一段 20-40s demo 后填 BV 号
 links:
-  - { label: GitHub, url: https://github.com/<user>/human-token }
-  - { label: Windows 安装包, url: <release url> }
+  - { label: GitHub, url: https://github.com/opqxxxpqo/human-token }
+  - { label: Windows 安装包, url: https://github.com/opqxxxpqo/human-token/releases/latest }
 ---
 
 ## 一个晚上的发问

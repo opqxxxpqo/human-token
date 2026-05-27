@@ -2,6 +2,12 @@
 
 把一天的键鼠活跃度，转化成「能量消耗曲线」——模仿 Claude Code 的终端美学，让打工人第一次看见自己在燃烧什么。
 
+### ⬇ 下载
+
+[**Windows 安装包（最新版）**](https://github.com/opqxxxpqo/human-token/releases/latest) · [全部 Releases](https://github.com/opqxxxpqo/human-token/releases)
+
+> Windows x64。下载 `human-token_x.y.z_x64-setup.exe` 运行即可，首次运行若无 WebView2 会自动下载。
+
 - **悬浮球长期驻留** 桌面右下角，余光可读、不打扰主工作流
 - **三个核心视图**：今日仪表盘 / 时间线回放 / 本周节律
 - **隐私边界清晰**：数据 **只存本地**（OS app-data 目录），不联网、不上传
